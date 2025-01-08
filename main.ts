@@ -4,15 +4,16 @@
 namespace EtAudio {
     let MODULE = "EtAudio"
 
-    let ISPLAYING = false
+    let EventFinished: EtCommon.eventHandler
+    let PLAYING = "PLAYING"
+
+    EtCommon.status.create( MODULE, PLAYING, 0)
     // set true by the routine 'play'
     // set false by the routine 'stop' or by the event 'ready'
 
-    let EventFinished: EtCommon.eventHandler
-
     export function onEventFinished(id: string) {
         if (EventFinished) EventFinished(id)
-        ISPLAYING = false
+        EtCommon.status.set(MODULE, PLAYING, 0)
     }
 
     //% block="ID"
@@ -33,7 +34,7 @@ namespace EtAudio {
     //% id.defl="EtAudio"
     export function stop(id: string) {
         EtCommon.setValue(id, "stop", "")
-        if (ISPLAYING)
+        if (EtCommon.status.isTrue(MODULE, PLAYING))
             onEventFinished(id)
     }
 
@@ -43,7 +44,7 @@ namespace EtAudio {
     //% file.min=1 file.max=100 file.defl=1
     export function play(file: number, id: string) {
         EtCommon.setValue(id, "play", file.toString())
-        ISPLAYING = true
+        EtCommon.status.set(MODULE, PLAYING, 1)
     }
 
     //% block="set the volume of %id to %vol \\%"
@@ -74,7 +75,11 @@ namespace EtAudio {
             ret = EtCommon.getValue(MODULE, "A", "busy")
         }
         while (ret.isEmpty())
-        ISPLAYING = (ret == "true")
-        return ISPLAYING
+        if (ret == "true") {
+            EtCommon.status.set(MODULE, PLAYING, 1)
+            return true
+        }
+        EtCommon.status.set(MODULE, PLAYING, 0)
+        return false
     }
 }
