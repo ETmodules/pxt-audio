@@ -5,15 +5,15 @@ namespace EtAudio {
     let MODULE = "EtAudio"
 
     let EventFinished: EtCommon.eventHandler
-    let PLAYING = "PLAYING"
+    let ISPLAYING = "isplaying"
 
-    EtCommon.status.create( MODULE, PLAYING, 0)
+    EtCommon.events.register( MODULE, ISPLAYING, "")
     // set true by the routine 'play'
     // set false by the routine 'stop' or by the event 'ready'
 
     export function onEventFinished(id: string) {
         if (EventFinished) EventFinished(id)
-        EtCommon.status.set(MODULE, PLAYING, 0)
+        EtCommon.events.set(MODULE, ISPLAYING, "")
     }
 
     //% block="ID"
@@ -33,9 +33,9 @@ namespace EtAudio {
     //% block.loc.nl="stop het afspelen op %id"
     //% id.defl="EtAudio"
     export function stop(id: string) {
+//        if (EtCommon.events.isTrue(MODULE, ISPLAYING))
+//            onEventFinished(id)
         EtCommon.setValue(id, "stop", "")
-        if (EtCommon.status.isTrue(MODULE, PLAYING))
-            onEventFinished(id)
     }
 
     //% block="play %file at %id"
@@ -43,8 +43,8 @@ namespace EtAudio {
     //% id.defl="EtAudio"
     //% file.min=1 file.max=100 file.defl=1
     export function play(file: number, id: string) {
+//        EtCommon.events.set(MODULE, ISPLAYING, "true")
         EtCommon.setValue(id, "play", file.toString())
-        EtCommon.status.set(MODULE, PLAYING, 1)
     }
 
     //% block="set the volume of %id to %vol \\%"
@@ -52,7 +52,7 @@ namespace EtAudio {
     //% id.defl="EtAudio"
     //% vol.min=0 vol.max=100 vol.defl=100
     export function volume(id: string, vol: number) {
-        EtCommon.setValue(id, "play", vol.toString())
+        EtCommon.setValue(id, "volume", vol.toString())
     }
 
     //% block="when playing finished at %id"
@@ -69,17 +69,6 @@ namespace EtAudio {
     //% block.loc.nl="module %id speelt af"
     //% id.defl="EtAudio"
     export function isBusy(id: string): boolean {
-        EtCommon.askValue(MODULE, "busy")
-        let ret: string
-        do {
-            ret = EtCommon.getValue(MODULE, "A", "busy")
-        }
-        while (ret.isEmpty())
-        if (ret == "true") {
-            EtCommon.status.set(MODULE, PLAYING, 1)
-            return true
-        }
-        EtCommon.status.set(MODULE, PLAYING, 0)
-        return false
+        return EtCommon.events.isTrue( MODULE, ISPLAYING)
     }
 }
