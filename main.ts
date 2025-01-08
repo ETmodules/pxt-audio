@@ -4,16 +4,21 @@
 namespace EtAudio {
     let MODULE = "EtAudio"
 
-    let EventFinished: EtCommon.eventHandler
+    let EventStarted: EtCommon.eventHandler
+    let EventStopped: EtCommon.eventHandler
+    let EventPlaying: EtCommon.eventHandler
     let ISPLAYING = "isplaying"
 
-    EtCommon.events.register( MODULE, ISPLAYING, "")
-    // set true by the routine 'play'
-    // set false by the routine 'stop' or by the event 'ready'
+    export function onEventStarted(id: string) {
+        if (EventStarted) EventStopped(id)
+    }
 
-    export function onEventFinished(id: string) {
-        if (EventFinished) EventFinished(id)
-        EtCommon.events.set(MODULE, ISPLAYING, "")
+    export function onEventStopped(id: string) {
+        if (EventStopped) EventStopped(id)
+    }
+
+    export function onEventPlaying(id: string) {
+        if (EventPlaying) EventPlaying(id)
     }
 
     //% block="ID"
@@ -33,8 +38,6 @@ namespace EtAudio {
     //% block.loc.nl="stop het afspelen op %id"
     //% id.defl="EtAudio"
     export function stop(id: string) {
-//        if (EtCommon.events.isTrue(MODULE, ISPLAYING))
-//            onEventFinished(id)
         EtCommon.setValue(id, "stop", "")
     }
 
@@ -43,7 +46,6 @@ namespace EtAudio {
     //% id.defl="EtAudio"
     //% file.min=1 file.max=100 file.defl=1
     export function play(file: number, id: string) {
-//        EtCommon.events.set(MODULE, ISPLAYING, "true")
         EtCommon.setValue(id, "play", file.toString())
     }
 
@@ -55,20 +57,26 @@ namespace EtAudio {
         EtCommon.setValue(id, "volume", vol.toString())
     }
 
-    //% block="when playing finished at %id"
+    //% block="when playing Stopped at %id"
     //% block.loc.nl="wanneer het afspelen op %id stopt"
     //% id.defl="EtAudio"
-    export function onFinished(id: string, programmableCode: () => void): void {
-        let item2: EtCommon.eventItem
-        item2 = { handler: onEventFinished, module: id, signal: "finished" }
-        EtCommon.eventArray.push(item2)
-        EventFinished = programmableCode
+    export function onStopped(id: string, programmableCode: () => void): void {
+        EtCommon.events.register(MODULE, ISPLAYING, "false", onEventStopped)
+        EventStopped = programmableCode
+    }
+
+    //% block="when playing Stopped at %id"
+    //% block.loc.nl="wanneer het afspelen op %id stopt"
+    //% id.defl="EtAudio"
+    export function onStarted(id: string, programmableCode: () => void): void {
+        EtCommon.events.register(MODULE, ISPLAYING, "true", onEventStarted)
+        EventStopped = programmableCode
     }
 
     //% block="module %id is playing"
     //% block.loc.nl="module %id speelt af"
     //% id.defl="EtAudio"
     export function isBusy(id: string): boolean {
-        return EtCommon.events.isTrue( MODULE, ISPLAYING)
+        return EtCommon.events.testEvent( MODULE, ISPLAYING,"true")
     }
 }
