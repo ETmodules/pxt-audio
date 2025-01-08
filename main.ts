@@ -58,7 +58,7 @@ basic.showString("x")
     export function volume(id: string, vol: number) {
         EtCommon.setValue(id, "volume", vol.toString())
     }
-
+/*
     //% block="when playing stopped at %id"
     //% block.loc.nl="wanneer het afspelen op %id stopt"
     //% id.defl="EtAudio"
@@ -81,4 +81,5 @@ basic.showString("x")
     export function isPlaying(id: string): boolean {
         return EtCommon.events.testEvent(MODULE, EVENT_ISPLAYING, "true")
     }
+*/
 }
