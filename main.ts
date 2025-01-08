@@ -10,10 +10,12 @@ namespace EtAudio {
 
     export function onEventStarted(id: string) {
         if (EventStarted) EventStarted(id)
+basic.showString("+")
     }
 
     export function onEventStopped(id: string) {
         if (EventStopped) EventStopped(id)
+basic.showString("x")
     }
 
 
