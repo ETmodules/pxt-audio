@@ -4,10 +4,9 @@
 namespace EtAudio {
     let MODULE = "EtAudio"
 
+    let EVENT_ISPLAYING = "isplaying"
     let EventStarted: EtCommon.eventHandler
     let EventStopped: EtCommon.eventHandler
-    let EventPlaying: EtCommon.eventHandler
-    let ISPLAYING = "isplaying"
 
     export function onEventStarted(id: string) {
         if (EventStarted) EventStopped(id)
@@ -17,9 +16,6 @@ namespace EtAudio {
         if (EventStopped) EventStopped(id)
     }
 
-    export function onEventPlaying(id: string) {
-        if (EventPlaying) EventPlaying(id)
-    }
 
     //% block="ID"
     //% block.loc.nl="ID"
@@ -57,26 +53,26 @@ namespace EtAudio {
         EtCommon.setValue(id, "volume", vol.toString())
     }
 
-    //% block="when playing Stopped at %id"
+    //% block="when playing stopped at %id"
     //% block.loc.nl="wanneer het afspelen op %id stopt"
     //% id.defl="EtAudio"
     export function onStopped(id: string, programmableCode: () => void): void {
-        EtCommon.events.register(MODULE, ISPLAYING, "false", onEventStopped)
+        EtCommon.events.register(MODULE, EVENT_ISPLAYING, "false", onEventStopped)
         EventStopped = programmableCode
     }
 
-    //% block="when playing Stopped at %id"
-    //% block.loc.nl="wanneer het afspelen op %id stopt"
+    //% block="when playing started at %id"
+    //% block.loc.nl="wanneer het afspelen op %id begint"
     //% id.defl="EtAudio"
     export function onStarted(id: string, programmableCode: () => void): void {
-        EtCommon.events.register(MODULE, ISPLAYING, "true", onEventStarted)
+        EtCommon.events.register(MODULE, EVENT_ISPLAYING, "true", onEventStarted)
         EventStopped = programmableCode
     }
 
     //% block="module %id is playing"
     //% block.loc.nl="module %id speelt af"
     //% id.defl="EtAudio"
-    export function isBusy(id: string): boolean {
-        return EtCommon.events.testEvent( MODULE, ISPLAYING,"true")
+    export function isPlaying(id: string): boolean {
+        return EtCommon.events.testEvent(MODULE, EVENT_ISPLAYING, "true")
     }
 }
