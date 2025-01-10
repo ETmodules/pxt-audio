@@ -9,13 +9,17 @@ namespace EtAudio {
     let EventStopped: EtCommon.eventHandler
 
     export function onEventStarted(id: string) {
+basic.showString("+")
         if (EventStarted) {
+basic.showString("H")
             EventStarted(id)
         }
     }
 
     export function onEventStopped(id: string) {
+basic.showString("x")
         if (EventStopped) {
+basic.showString("H")
             EventStopped(id)
         }
     }
