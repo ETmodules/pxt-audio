@@ -9,17 +9,13 @@ namespace EtAudio {
     let EventStopped: EtCommon.eventHandler
 
     export function onEventStarted(id: string) {
-basic.showString("+")
         if (EventStarted) {
-basic.showString("H")
             EventStarted(id)
         }
     }
 
     export function onEventStopped(id: string) {
-basic.showString("x")
         if (EventStopped) {
-basic.showString("H")
             EventStopped(id)
         }
     }
@@ -74,7 +70,7 @@ basic.showString("H")
     //% id.defl="EtAudio"
     export function onStarted(id: string, programmableCode: () => void): void {
         EtCommon.events.register(MODULE, EVENT_ISPLAYING, "true", onEventStarted)
-        EventStopped = programmableCode
+        EventStarted = programmableCode
     }
 
     //% block="module %id is playing"
