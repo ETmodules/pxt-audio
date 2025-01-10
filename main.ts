@@ -34,27 +34,19 @@ namespace EtAudio {
         MODULE = id
     }
 
-    //% block="stop playing at %id"
-    //% block.loc.nl="stop het afspelen op %id"
-    //% id.defl="EtAudio"
-    export function stop(id: string) {
-        EtCommon.setValue(id, "stop", "")
-    }
-
-    //% block="play %file at %id"
-    //% block.loc.nl="speel %file af op %id"
-    //% id.defl="EtAudio"
-    //% file.min=1 file.max=100 file.defl=1
-    export function play(file: number, id: string) {
-        EtCommon.setValue(id, "play", file.toString())
-    }
-
     //% block="set the volume of %id to %vol \\%"
     //% block.loc.nl="stel het volume van %id in op %vol \\%"
     //% id.defl="EtAudio"
     //% vol.min=0 vol.max=100 vol.defl=100
     export function volume(id: string, vol: number) {
         EtCommon.setValue(id, "volume", vol.toString())
+    }
+
+    //% block="module %id is playing"
+    //% block.loc.nl="module %id speelt af"
+    //% id.defl="EtAudio"
+    export function isPlaying(id: string): boolean {
+        return EtCommon.events.testEvent(MODULE, EVENT_ISPLAYING, "true")
     }
 
     //% block="when playing stopped at %id"
@@ -73,11 +65,19 @@ namespace EtAudio {
         EventStarted = programmableCode
     }
 
-    //% block="module %id is playing"
-    //% block.loc.nl="module %id speelt af"
+    //% block="stop playing at %id"
+    //% block.loc.nl="stop het afspelen op %id"
     //% id.defl="EtAudio"
-    export function isPlaying(id: string): boolean {
-        return EtCommon.events.testEvent(MODULE, EVENT_ISPLAYING, "true")
+    export function stop(id: string) {
+        EtCommon.setValue(id, "stop", "")
+    }
+
+    //% block="play %file at %id"
+    //% block.loc.nl="speel %file af op %id"
+    //% id.defl="EtAudio"
+    //% file.min=1 file.max=100 file.defl=1
+    export function play(file: number, id: string) {
+        EtCommon.setValue(id, "play", file.toString())
     }
 
 }
