@@ -34,7 +34,10 @@ namespace EtAudio {
     //% block.loc.nl="stel de module id in op %id"
     //% id.defl="EtAudio"
     export function setModuleId(id: string) {
+        EtCommon.events.unregister(MODULE)
         MODULE = id
+        EtCommon.events.register(id, "stopped", onEventStopped)
+        EtCommon.events.register(id, "started", onEventStarted)
     }
 
     //% block="set the volume of %id to %vol \\%"
@@ -56,7 +59,6 @@ namespace EtAudio {
     //% block.loc.nl="wanneer het afspelen op %id stopt"
     //% id.defl="EtAudio"
     export function onStopped(id: string, programmableCode: () => void): void {
-        EtCommon.events.register(MODULE, "stopped", onEventStopped)
         EventStopped = programmableCode
     }
 
@@ -64,7 +66,6 @@ namespace EtAudio {
     //% block.loc.nl="wanneer het afspelen op %id begint"
     //% id.defl="EtAudio"
     export function onStarted(id: string, programmableCode: () => void): void {
-        EtCommon.events.register(MODULE, "started", onEventStarted)
         EventStarted = programmableCode
     }
 
@@ -82,5 +83,8 @@ namespace EtAudio {
     export function play(file: number, id: string) {
         EtCommon.sendSignal(id, "play", file.toString())
     }
+
+    EtCommon.events.register(MODULE, "stopped", onEventStopped)
+    EtCommon.events.register(MODULE, "started", onEventStarted)
 
 }
